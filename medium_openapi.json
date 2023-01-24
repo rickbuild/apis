@@ -1,0 +1,1045 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Medium API",
+    "version": "1.0",
+    "description": "Medium API helps you to quickly extract data from Medium's Website (https://medium.com). \n\nYou can gather data related to users, publications, articles (including its textual content), latest posts & top writers within a topic/niche, etc…\n",
+    "contact": {
+      "name": "Nishu Jain",
+      "email": "nishu@mediumapi.com",
+      "url": "https://mediumapi.com"
+    },
+    "termsOfService": "https://github.com/weeping-angel/medium-apis/raw/pages/terms_of_use.pdf"
+  },
+  "servers": [
+    {
+      "url": "https://medium2.p.rapidapi.com"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Get Welcome",
+        "description": "**Test Endpoint**\nReturns the information about the Medium API\n",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Full name of the API",
+                      "example": "Medium API"
+                    },
+                    "developer": {
+                      "type": "string",
+                      "description": "Full name of the API's developer",
+                      "example": "Nishu Jain"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email ID of the developer",
+                      "example": "nishu@mediumapi.com"
+                    },
+                    "website": {
+                      "type": "string",
+                      "description": "Link to the Medium API's website",
+                      "example": "https://mediumapi.com"
+                    },
+                    "documentation": {
+                      "type": "string",
+                      "description": "Link to the Medium API's documentation",
+                      "example": "https://docs.mediumapi.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/id_for/{username}": {
+      "get": {
+        "summary": "Get User ID",
+        "description": "Returns the unique `user_id` for the given `username`.\n\n**Note:** You can find the `username` from the user's/author's profile page URL. \n- **username**.medium.com\n- medium.com/@**username**\n",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique string chosen by every single Medium user.",
+            "schema": {
+              "type": "string",
+              "example": "nishu-jain"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique hash id of the user.",
+                      "example": "1985b61817c3"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}": {
+      "get": {
+        "summary": "Get User Info",
+        "description": "Returns user related information like *Full name, Bio, Followers count, Following count, Twitter username, Profile-image URL, User ID, etc...* \n\nIt takes `user_id` as the path parameter.\n\n**Note:** If you don't know the `user_id`, then you can get it from the endpoint\\\n'/user/id_for/{`username`}'.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every single Medium user.",
+            "schema": {
+              "type": "string",
+              "example": "1985b61817c3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "1985b61817c3"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "nishu-jain"
+                    },
+                    "fullname": {
+                      "type": "string",
+                      "example": "Nishu Jain"
+                    },
+                    "bio": {
+                      "type": "string",
+                      "example": "Obsessed with Tech Biz Arts & Words; Does NOT dumb down the writing; Skilled Wordsmith; Delivers the best"
+                    },
+                    "top_writer_in": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "programming"
+                      }
+                    },
+                    "followers_count": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 354
+                    },
+                    "following_count": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 4
+                    },
+                    "twitter_username": {
+                      "type": "string",
+                      "example": "vortlog"
+                    },
+                    "is_writer_program_enrolled": {
+                      "type": "boolean"
+                    },
+                    "is_suspended": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "allow_notes": {
+                      "type": "boolean"
+                    },
+                    "medium_member_at": {
+                      "type": "string",
+                      "example": "2020-06-24 16:05:46"
+                    },
+                    "image_url": {
+                      "type": "string",
+                      "example": "https://miro.medium.com/1*C92Hx7k9nRM7TPlrmhgW9w.jpeg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/following": {
+      "get": {
+        "summary": "Get User Following",
+        "description": "Returns the list of `user_ids` of the user's followings.\n\n**Note:** Currently, this list does not contain the `publication_ids` of the publications that the user is following.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique hash id assigned to every single Medium user.",
+            "schema": {
+              "type": "string",
+              "example": "14d5c41e0264"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "following": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "c61f93eeb8a5"
+                      }
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "14d5c41e0264"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/followers": {
+      "get": {
+        "summary": "Get User Followers",
+        "description": "Returns the list of `user_ids` of the user's followers.\n\n**Note:** The length of this followers' list might be different from what you get in  the \"Get User Info\" Endpoint. It's because, this list doesn't include Medium Users who  left the platform.\nIf you really need the exact followers' count, use this endpoint to get the followers'  list and take its length as the exact followers' count\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique hash id assigned to every single Medium user.",
+            "schema": {
+              "type": "string",
+              "example": "1985b61817c3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "followers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "105e6602fb79"
+                      }
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "14d5c41e0264"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/articles": {
+      "get": {
+        "summary": "Get User's Articles",
+        "description": "Returns the list of articles (`article_ids`) written by the user.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique hash id assigned to every single Medium user.",
+            "schema": {
+              "type": "string",
+              "example": "1985b61817c3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "associated_articles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "562c5821b5f0"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/top_articles": {
+      "get": {
+        "summary": "Get User's Top Articles",
+        "description": "Returns a list of `article_ids` of the top 10 articles on the user's profile, for a given `user_id`.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique hash id assigned to every single Medium user.",
+            "schema": {
+              "type": "string",
+              "example": "1985b61817c3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "associated_articles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "562c5821b5f0"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}/interests": {
+      "get": {
+        "summary": "Get User's Interests",
+        "description": "Returns a list of tags that the given user follows.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "Unique hash id assigned to every single Medium user.",
+            "schema": {
+              "type": "string",
+              "example": "1985b61817c3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tags_followed": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "software-engineering"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/{article_id}": {
+      "get": {
+        "summary": "Get Article Info",
+        "description": "Returns the article related information such as *Title, Subtitle, Tags,  Topics* (assigned by Medium), *Publication, Published date and time,  Clap Count, Voter Count, Word Count, Reading Time, Language, etc…*\n",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every Medium Article.",
+            "schema": {
+              "type": "string",
+              "example": "f06086080568"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "f06086080568"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "4 Tips to Strengthen Your Bonds — Now"
+                    },
+                    "subtitle": {
+                      "type": "string",
+                      "example": "Re-energize your relationship in the midst of a crisis"
+                    },
+                    "author": {
+                      "type": "string",
+                      "example": "1985b61817c3"
+                    },
+                    "publication_id": {
+                      "type": "string",
+                      "example": "e7040e67514c"
+                    },
+                    "responses_count": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 10
+                    },
+                    "word_count": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 845
+                    },
+                    "reading_time": {
+                      "type": "number",
+                      "example": 3.5720125786164
+                    },
+                    "topics": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "mental-health"
+                      }
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "relationships"
+                      }
+                    },
+                    "claps": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 53
+                    },
+                    "voters": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 3
+                    },
+                    "lang": {
+                      "type": "string",
+                      "example": "en"
+                    },
+                    "published_at": {
+                      "type": "string",
+                      "example": "2020-08-25 11:08:18"
+                    },
+                    "last_modified_at": {
+                      "type": "string",
+                      "example": "2021-05-28 04:22:48"
+                    },
+                    "url": {
+                      "type": "string",
+                      "example": "https://medium.com/age-of-awareness/re-energizing-your-relationship-in-the-midst-of-a-crisis-f06086080568"
+                    },
+                    "image_url": {
+                      "type": "string",
+                      "example": "https://miro.medium.com/1*W0wM9xIeeIR3_Oo0E_thaA.png"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/{article_id}/content": {
+      "get": {
+        "summary": "Get Article's Content",
+        "description": "Returns the content of an article/story, for the corresponding `article_id`\n",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every Medium Article.",
+            "schema": {
+              "type": "string",
+              "example": "562c5821b5f0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "string",
+                      "example": "Article title\nArticle Subtitle\nArticle Content ....\n"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/{article_id}/markdown": {
+      "get": {
+        "summary": "Get Article's Markdown",
+        "description": "Returns the markdown of an article/story from Medium, for the corresponding `article_id`\n",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every Medium Article.",
+            "schema": {
+              "type": "string",
+              "example": "67fa62fc1971"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "example": "# Article title\n## Article Subtitle\nArticle **Content** with lot of _markups_ ....\n![Images Alt](Image URL)\n"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/{article_id}/responses": {
+      "get": {
+        "summary": "Get Article Responses",
+        "description": "Returns a list of responses (`response_ids`, same as `article_ids`) for a given article (`article_id`)\nNote: To see the content of the response, use the \"Get Article's Content\" endpoint\n",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every Medium Article.",
+            "schema": {
+              "type": "string",
+              "example": "67fa62fc1971"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "responses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "a9bbc22aa1e6"
+                      }
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "67fa62fc1971"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publication/id_for/{publication_slug}": {
+      "get": {
+        "summary": "Get Publication ID",
+        "description": "Returns the unique `publication_id` for the given `publication_slug`.\n\n**Note:** You can find the `publication_slug` from the publication's homepage URL.\n- medium.com/**publication_slug**\n",
+        "parameters": [
+          {
+            "name": "publication_slug",
+            "in": "path",
+            "required": true,
+            "description": "It's a lowercased hyphen-separated unique string alloted to each Medium Publication.",
+            "schema": {
+              "type": "string",
+              "example": "codex"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "publication_id": {
+                      "type": "string",
+                      "description": "Unique hash id of the publication.",
+                      "example": "29038077e4c6"
+                    },
+                    "publication_slug": {
+                      "type": "string",
+                      "description": "Same publication slug that you passed in the path parameters.",
+                      "example": "codex"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publication/{publication_id}": {
+      "get": {
+        "summary": "Get Publication Info",
+        "description": "Returns the publication related information such as *Publication name, Tagline, Description, Tags, Followers Count, Twitter username, Instagram username, Facebook Page name, etc …*\n\n**Note:** If you don't know the `publication_id`, you can get it from any article published by it. Use endpoint \"/article/{article_id}\" to retrieve the `publication_id`.\n",
+        "parameters": [
+          {
+            "name": "publication_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every Medium Publication.",
+            "schema": {
+              "type": "string",
+              "example": "98111c9905da"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "98111c9905da"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Towards AI"
+                    },
+                    "tagline": {
+                      "type": "string",
+                      "example": "The World's Leading AI and Technology Publication"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Towards AI is the world's leading AI and technology publication. Publishing unbiased AI and technology-related articles. Read by thought-leaders and decision-makers around the world."
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "ARTIFICIAL INTELLIGENCE"
+                      }
+                    },
+                    "followers": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 25260
+                    },
+                    "instagram_username": {
+                      "type": "string",
+                      "example": "towards_ai"
+                    },
+                    "facebook_pagename": {
+                      "type": "string",
+                      "example": "towardsAl"
+                    },
+                    "url": {
+                      "type": "string",
+                      "example": "pub.towardsai.net"
+                    },
+                    "slug": {
+                      "type": "string",
+                      "example": "towards-artificial-intelligence"
+                    },
+                    "twitter_username": {
+                      "type": "string",
+                      "example": "towards_AI"
+                    },
+                    "creator": {
+                      "type": "string",
+                      "example": "8a819983d566"
+                    },
+                    "editors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "aea8a19ea239"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publication/{publication_id}/articles": {
+      "get": {
+        "summary": "Get Publication Articles",
+        "description": "Returns the list of `articles_ids`, of the latest 25 articles, posted in that publication.\nUse the `count` query parameter to limit the number of articles to get (0 < count < 25)\n",
+        "parameters": [
+          {
+            "name": "publication_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every Medium Publication.",
+            "schema": {
+              "type": "string",
+              "example": "98111c9905da"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "description": "To set the number of article_ids to receive (less than 25)",
+            "schema": {
+              "type": "integer",
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "publication_articles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "67fa62fc1971"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publication/{publication_id}/newsletter": {
+      "get": {
+        "summary": "Get Publication Newsletter",
+        "description": "Returns the newsletter related information such as *id, name, description, slug, creator_id, subscribers, image_url, etc …*\n\n**Note:** If you don't know the `publication_id`, you can get it from any article published by it. Use endpoint \"/article/{article_id}\" to retrieve the `publication_id`.\n",
+        "parameters": [
+          {
+            "name": "publication_id",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique hash id assigned to every Medium Publication.",
+            "schema": {
+              "type": "string",
+              "example": "98111c9905da"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "d710a73cd042"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "This AI newsletter is all you need"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "We have moved our newsletter. Subscribe → https://ws.towardsai.net/subscribe"
+                    },
+                    "subscribers": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 6752
+                    },
+                    "slug": {
+                      "type": "string",
+                      "example": "this-ai-newsletter-is-all-you-need"
+                    },
+                    "creator_id": {
+                      "type": "string",
+                      "example": "aea8a19ea239"
+                    },
+                    "image": {
+                      "type": "string",
+                      "example": "https://miro.medium.com/1*j2OVd7j2o2FHeE7T8TzpXw.png"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topfeeds/{tag}/{mode}": {
+      "get": {
+        "summary": "Get Topfeeds",
+        "description": "Returns a list of `article_ids` (length: 25) for the given `tag` and `mode`.\n",
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique string, usually hyphen-separated, representing a class of content.",
+            "schema": {
+              "type": "string",
+              "example": "artificial-intelligence"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "path",
+            "required": true,
+            "description": "Mode:\n\n  - `hot` : For getting trending articles\n  - `new` : For getting latest articles\n  - `top_year` : For getting best articles of the year\n  - `top_month` : For getting best articles of the month\n  - `top_week` : For getting best articles of the week\n  - `top_all_time`: For getting best article of all time\n",
+            "schema": {
+              "type": "string",
+              "example": "new"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "topfeeds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "b2076afc4930"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/top_writer/{topic_slug}": {
+      "get": {
+        "summary": "Get Top Writers",
+        "description": "Returns a list of top writers (`user_ids`) within a particular topic/niche (`topic_slug`). \ne.g. \n- blockchain\n- relationships\n- artificial-intelligence, etc ...\n\n**Note:** Maximum number of top writers within a topic/niche will be 250.\n",
+        "parameters": [
+          {
+            "name": "topic_slug",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique string, usually hyphen-separated, representing a topic/niche, as classified by Medium.",
+            "schema": {
+              "type": "string",
+              "example": "relationships"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "top_writers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "1985b61817c3"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/latestposts/{topic_slug}": {
+      "get": {
+        "summary": "Get Latest Posts",
+        "description": "Returns a list of latest posts (`article_ids`) for a topic/niche (as classified by the Medium platform). Example of a topic/niche can be:\n* blockchain\n* relationships\n* mental-health, etc …\n\nThese are known as `topic_slugs`. At any given moment, this endpoint will return a list of 25 articles (`article_ids`).\n",
+        "parameters": [
+          {
+            "name": "topic_slug",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique string, usually hyphen-separated, representing a topic/niche, as classified by Medium.",
+            "schema": {
+              "type": "string",
+              "example": "artificial-intelligence"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "latestposts": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "67fa62fc1971"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/related_tags/{tag}": {
+      "get": {
+        "summary": "Get Related Tags",
+        "description": "Returns a list of `related_tags` for the given `tag`.\n",
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "path",
+            "required": true,
+            "description": "It's a unique string, usually hyphen-separated, representing a class of content.",
+            "schema": {
+              "type": "string",
+              "example": "blockchain"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "related_tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "cryptocurrency"
+                      }
+                    },
+                    "given_tag": {
+                      "type": "string",
+                      "example": "blockchain"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-rapidapi-key"
+      },
+      "ApiHost": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-rapidapi-host"
+      }
+    }
+  }
+}
